@@ -1,0 +1,33 @@
+version: '3'
+services:
+  serve:
+    build: .
+    command: ng serve --host 0.0.0.0 --poll 1000
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "4200:4200"
+##  serveprod:
+##      build: .
+##      command: ng serve --host 0.0.0.0 --e prod --poll 1000
+##      environment:
+##        NODE_ENV: production
+##      volumes:
+##        - .:/usr/src/app
+##        - /usr/src/app/node_modules
+##      ports:
+##        - "4201:4201"
+##  test:
+##   build: .
+##   command: ng test
+##    environment:
+##      NODE_ENV: development
+##    volumes:
+##      - .:/usr/src/app
+##      - /usr/src/app/node_modules
+##    ports:
+##        - "9876:9876"
+##    privileged: true # for Chrome to run on Docker
