@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title>Todo Example - Bootsnipp.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="todolist not-done">
+             <h1>Todos</h1>
+                <input type="text" class="form-control add-todo" placeholder="Add todo">
+                    <hr>
+                    <ul id="sortable" class="list-unstyled">
+                    <!--<li class="ui-state-default">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="checkbox-round" value="" />Take out the trash</label>
+                        </div>
+                    </li>
+                    <li class="ui-state-default">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="checkbox-round"  value="" />Buy bread</label>
+                        </div>
+                    </li>
+                    <li class="ui-state-default">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" class="checkbox-round"  value="" />Teach penguins to fly</label>
+                        </div>
+                    </li>-->
+                </ul>
+                <div class="todo-footer">
+                    <strong><span class="count-todos"></span></strong> Items Left
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="todolist">
+             <h1>Already Done</h1>
+                <ul id="done-items" class="list-unstyled">
+                    <li>Some item <button class="remove-item btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-remove"></span></button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+//$("#sortable").sortable();
+/*
+function doCall(urlToCall, callback) {
+    urllib.request(urlToCall, { wd: 'nodejs' }, function (err, data, response) {
+        var statusCode = response.statusCode;
+        finalData = getResponseJson(statusCode, data.toString());
+        return callback(finalData);
+    });
+}
+
+
+
+var urlToCall = "http://localhost:3000/todo/";
+doCall(urlToCall, function(response){
+    // Here you have access to your variable
+    console.log(response);
+})
+
+
+var userDetails;
+function initialize() {
+    // Setting URL and headers for request
+    var options = {
+        url: 'http://localhost:3000/todo/',
+        headers: {
+            'User-Agent': 'request'
+        }
+    };
+    // Return new promise
+    return new Promise(function(resolve, reject) {
+     // Do async job
+        request.get(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(JSON.parse(body));
+				console.log(JSON.parse(body));
+            }
+        })
+    })
+}
+initialize();*/
+
+var api_url = 'http://localhost:8080/todo'
+$.ajax({
+        url: api_url ,
+		    contentType: "application/json",
+        success: function(result){
+            console.log(result);
+        }
+    });
+
+var $li = $("<li class='ui-state-default'><div class='checkbox'><label><input type='checkbox' class='checkbox-round'  value='' />Teach penguins to fly</label></div></li>");
+$("#sortable").append($li);
+
+$("#sortable").disableSelection();
+
+countTodos();
+
+// all done btn
+$("#checkAll").click(function(){
+    AllDone();
+});
+
+//create todo
+$('.add-todo').on('keypress',function (e) {
+      e.preventDefault
+      if (e.which == 13) {
+           if($(this).val() != ''){
+           var todo = $(this).val();
+            createTodo(todo);
+            countTodos();
+           }else{
+               // some validation
+           }
+      }
+});
+// mark task as done
+$('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
+    if($(this).prop('checked')){
+        var doneItem = $(this).parent().parent().find('label').text();
+        $(this).parent().parent().parent().addClass('remove');
+        done(doneItem);
+        countTodos();
+    }
+});
+
+//delete done task from "already done"
+$('.todolist').on('click','.remove-item',function(){
+    removeItem(this);
+});
+
+// count tasks
+function countTodos(){
+    var count = $("#sortable li").length;
+    $('.count-todos').html(count);
+}
+
+//create task
+function createTodo(text){
+    var markup = '<li class="ui-state-default"><div class="checkbox"><label><input type="checkbox" class="checkbox-round" value="" />'+ text +'</label></div></li>';
+    $('#sortable').append(markup);
+    $('.add-todo').val('');
+}
+
+//mark task as done
+function done(doneItem){
+    var done = doneItem;
+    var markup = '<li>'+ done +'<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
+    $('#done-items').append(markup);
+    $('.remove').remove();
+}
+
+//mark all tasks as done
+function AllDone(){
+    var myArray = [];
+
+    $('#sortable li').each( function() {
+         myArray.push($(this).text());
+    });
+
+    // add to done
+    for (i = 0; i < myArray.length; i++) {
+        $('#done-items').append('<li>' + myArray[i] + '<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>');
+    }
+
+    // myArray
+    $('#sortable li').remove();
+    countTodos();
+}
+
+//remove done task from list
+function removeItem(element){
+    $(element).parent().remove();
+}
+</script>
+</body>
+</html>
