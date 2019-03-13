@@ -1,0 +1,10 @@
+Clone the repository at https://github.com/GoContec/deepblu.ng2
+Build the Angular2 CLI Image
+cd to your project directory
+docker build -t angular-cli:1.0.0-beta.18 .
+Build the Project Image
+cd to the deepblu directory located at the root level of your project directory
+docker-compose build
+Get to work!
+docker-compose up
+Project will be available at http://localhost:4200.
